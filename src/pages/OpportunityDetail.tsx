@@ -1,10 +1,12 @@
 import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { opportunities } from "@/data/mockData";
-import { ArrowLeft, MapPin, Briefcase, Clock, Building2, Calendar, Download, Bell, Mail } from "lucide-react";
+import { ArrowLeft, MapPin, Briefcase, Clock, Building2, Calendar, Download, Bell, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import MozambiqueMap from "@/components/MozambiqueMap";
 
 const statusStyles: Record<string, string> = {
   planned: "bg-info/10 text-info",
@@ -15,6 +17,7 @@ const statusStyles: Record<string, string> = {
 const OpportunityDetail = () => {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { isAuthenticated } = useAuth();
   const opp = opportunities.find((o) => o.id === id);
 
   if (!opp) return (
@@ -64,6 +67,14 @@ const OpportunityDetail = () => {
               </div>
             </div>
 
+            {/* Map */}
+            <div className="mt-8 rounded-xl border border-border bg-card p-6">
+              <h2 className="mb-4 font-serif text-xl flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-primary" /> Localização
+              </h2>
+              <MozambiqueMap highlightProvince={opp.province} size="md" />
+            </div>
+
             <div className="mt-8">
               <h2 className="mb-3 font-serif text-xl">Descrição</h2>
               <p className="leading-relaxed text-muted-foreground">
@@ -71,36 +82,56 @@ const OpportunityDetail = () => {
               </p>
             </div>
 
-            {/* Procurement */}
+            {/* Procurement - restricted */}
             {opp.procurement.length > 0 && (
               <div className="mt-8">
                 <h2 className="mb-4 font-serif text-xl">{t("detail.suppliers")}</h2>
-                <div className="space-y-3">
-                  {opp.procurement.map((p, i) => (
-                    <div key={i} className="rounded-xl border border-border bg-card p-4">
-                      <h4 className="font-medium text-foreground">{p.item}</h4>
-                      <div className="mt-2 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {p.deadline}</span>
-                        <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {p.contact}</span>
+                {isAuthenticated ? (
+                  <div className="space-y-3">
+                    {opp.procurement.map((p, i) => (
+                      <div key={i} className="rounded-xl border border-border bg-card p-4">
+                        <h4 className="font-medium text-foreground">{p.item}</h4>
+                        <div className="mt-2 flex flex-wrap gap-4 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {p.deadline}</span>
+                          <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {p.contact}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-border bg-muted/50 p-8 text-center">
+                    <Lock className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+                    <p className="mb-2 font-medium text-foreground">Conteúdo exclusivo para MPMEs registadas</p>
+                    <p className="mb-4 text-sm text-muted-foreground">Faça login ou registe-se para ver detalhes de procurement e contactos.</p>
+                    <Link to="/login"><Button size="sm">Criar Conta Gratuita</Button></Link>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
-            <Button className="gap-2" onClick={() => toast.success("Alerta configurado com sucesso!")}>
-              <Bell className="h-4 w-4" /> {t("detail.subscribe")}
-            </Button>
-            <Button variant="outline" className="gap-2" onClick={() => toast.info("Download iniciado!")}>
-              <Download className="h-4 w-4" /> {t("detail.download")}
-            </Button>
-            <Button variant="outline" className="gap-2" onClick={() => toast.info("Redirecionando...")}>
-              <Mail className="h-4 w-4" /> {t("detail.contact")}
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Button className="gap-2" onClick={() => toast.success("Alerta configurado com sucesso!")}>
+                  <Bell className="h-4 w-4" /> {t("detail.subscribe")}
+                </Button>
+                <Button variant="outline" className="gap-2" onClick={() => toast.info("Download iniciado!")}>
+                  <Download className="h-4 w-4" /> {t("detail.download")}
+                </Button>
+                <Button variant="outline" className="gap-2" onClick={() => toast.info("Redirecionando...")}>
+                  <Mail className="h-4 w-4" /> {t("detail.contact")}
+                </Button>
+              </>
+            ) : (
+              <div className="rounded-xl border border-border bg-card p-6 text-center">
+                <Lock className="mx-auto mb-3 h-6 w-6 text-muted-foreground" />
+                <p className="mb-2 text-sm font-medium">Acesso Restrito</p>
+                <p className="mb-4 text-xs text-muted-foreground">Faça login para receber alertas, baixar documentos e contactar entidades.</p>
+                <Link to="/login"><Button size="sm" className="w-full">Entrar / Registar</Button></Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

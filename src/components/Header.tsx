@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Menu, X, Globe, User, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, Globe, User, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
@@ -15,12 +15,13 @@ const Header = () => {
     { path: "/", label: t("nav.home") },
     { path: "/opportunities", label: t("nav.opportunities") },
     { path: "/dashboard", label: t("nav.dashboard") },
+    { path: "/alerts", label: t("nav.alerts") },
     { path: "/reports", label: t("nav.reports") },
     { path: "/mpme", label: t("nav.mpme") },
     { path: "/about", label: t("nav.about") },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -49,10 +50,21 @@ const Header = () => {
               {item.label}
             </Link>
           ))}
+          {user?.isAdmin && (
+            <Link
+              to="/admin"
+              className={`flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                location.pathname.startsWith("/admin")
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+              }`}
+            >
+              <Shield className="h-3.5 w-3.5" /> Admin
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Language Toggle */}
           <button
             onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
             className="flex items-center gap-1 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
@@ -61,7 +73,6 @@ const Header = () => {
             <span className="font-medium">{language === "pt" ? "EN" : "PT"}</span>
           </button>
 
-          {/* Auth */}
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
               <Link to="/profile">
@@ -80,11 +91,7 @@ const Header = () => {
             </Link>
           )}
 
-          {/* Mobile Toggle */}
-          <button
-            className="rounded-md p-2 lg:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
+          <button className="rounded-md p-2 lg:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
@@ -100,14 +107,21 @@ const Header = () => {
                 to={item.path}
                 onClick={() => setMobileOpen(false)}
                 className={`rounded-md px-3 py-2.5 text-sm font-medium ${
-                  isActive(item.path)
-                    ? "bg-secondary text-secondary-foreground"
-                    : "text-muted-foreground"
+                  isActive(item.path) ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"
                 }`}
               >
                 {item.label}
               </Link>
             ))}
+            {user?.isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-1 rounded-md px-3 py-2.5 text-sm font-medium text-primary"
+              >
+                <Shield className="h-3.5 w-3.5" /> Admin
+              </Link>
+            )}
           </nav>
         </div>
       )}
