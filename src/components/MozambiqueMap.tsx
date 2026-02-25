@@ -1,100 +1,175 @@
+// components/MozambiqueMapLeaflet.tsx
+"use client";
+
+import { useEffect, useRef } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { provinces } from "@/data/mockData";
+
+// Fix para ícones do Leaflet no Next.js
+import icon from "leaflet/dist/images/marker-icon.png";
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
+
+// Configuração dos ícones padrão
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 interface Props {
   highlightProvince?: string;
   onProvinceClick?: (province: string) => void;
-  size?: "sm" | "md" | "lg";
+  height?: string;
+  width?: string;
+  showInvestments?: boolean;
 }
 
-// Simplified province positions on a schematic map of Mozambique
-const provincePositions: Record<string, { x: number; y: number; w: number; h: number }> = {
-  "Niassa": { x: 145, y: 10, w: 80, h: 55 },
-  "Cabo Delgado": { x: 195, y: 5, w: 75, h: 60 },
-  "Nampula": { x: 175, y: 75, w: 85, h: 55 },
-  "Zambézia": { x: 135, y: 130, w: 95, h: 50 },
-  "Tete": { x: 80, y: 60, w: 85, h: 65 },
-  "Manica": { x: 75, y: 140, w: 65, h: 55 },
-  "Sofala": { x: 115, y: 180, w: 80, h: 50 },
-  "Inhambane": { x: 120, y: 260, w: 70, h: 45 },
-  "Gaza": { x: 85, y: 235, w: 65, h: 55 },
-  "Maputo Província": { x: 80, y: 300, w: 70, h: 35 },
-  "Maputo Cidade": { x: 95, y: 335, w: 55, h: 25 },
+// Coordenadas aproximadas das províncias de Moçambique
+const provinceCoordinates: Record<string, { lat: number; lng: number }> = {
+  Niassa: { lat: -13.5, lng: 36.5 },
+  "Cabo Delgado": { lat: -12.0, lng: 39.5 },
+  Nampula: { lat: -15.0, lng: 39.5 },
+  Zambézia: { lat: -17.0, lng: 37.5 },
+  Tete: { lat: -16.0, lng: 33.5 },
+  Manica: { lat: -19.0, lng: 33.5 },
+  Sofala: { lat: -19.5, lng: 35.0 },
+  Inhambane: { lat: -23.0, lng: 35.0 },
+  Gaza: { lat: -23.5, lng: 32.5 },
+  "Maputo Província": { lat: -25.5, lng: 32.0 },
+  "Maputo Cidade": { lat: -26.0, lng: 32.5 },
 };
 
-const MozambiqueMap = ({ highlightProvince, onProvinceClick, size = "md" }: Props) => {
-  const scale = size === "sm" ? 0.6 : size === "lg" ? 1.2 : 1;
-  const width = 300 * scale;
-  const height = 380 * scale;
+// Cores baseadas nos investimentos (do seu mockData)
+const getColorByInvestment = (investment: number) => {
+  if (investment > 20000) return "#166534"; // Verde escuro
+  if (investment > 15000) return "#15803d"; // Verde médio-escuro
+  if (investment > 10000) return "#16a34a"; // Verde médio
+  if (investment > 7000) return "#22c55e"; // Verde claro
+  return "#4ade80"; // Verde muito claro
+};
+
+const MozambiqueMapLeaflet = ({
+  highlightProvince,
+  onProvinceClick,
+  height = "500px",
+  width = "100%",
+  showInvestments = true,
+}: Props) => {
+  const mapRef = useRef<L.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Inicializar mapa apenas no cliente
+    if (typeof window === "undefined" || mapContainerRef.current === null)
+      return;
+
+    // Destruir mapa anterior se existir
+    if (mapRef.current) {
+      mapRef.current.remove();
+    }
+
+    // Criar novo mapa
+    const map = L.map(mapContainerRef.current).setView([-18.0, 35.0], 6);
+
+    // Adicionar tile layer do OpenStreetMap
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 10,
+    }).addTo(map);
+
+    // Adicionar marcadores para cada província
+    provinces.forEach((province) => {
+      const coords = provinceCoordinates[province.name];
+      if (!coords) return;
+
+      const isHighlighted = highlightProvince === province.name;
+      const color = getColorByInvestment(province.investment);
+
+      // Criar círculo para representar a província
+      const circle = L.circleMarker([coords.lat, coords.lng], {
+        radius: isHighlighted ? 20 : 15,
+        color: isHighlighted ? "#ef4444" : "#ffffff",
+        weight: isHighlighted ? 3 : 1,
+        fillColor: color,
+        fillOpacity: 0.8,
+      }).addTo(map);
+
+      // Adicionar popup com informações
+      circle.bindPopup(`
+        <div style="text-align: center;">
+          <strong>${province.name}</strong><br/>
+          Investimento: ${province.investment.toLocaleString()} MZN<br/>
+          ${province.investment > 20000 ? "★ Alto investimento" : ""}
+        </div>
+      `);
+
+      // Adicionar evento de clique
+      if (onProvinceClick) {
+        circle.on("click", () => {
+          onProvinceClick(province.name);
+        });
+      }
+
+      // Adicionar tooltip ao passar o mouse
+      circle.bindTooltip(province.name, { permanent: false, direction: "top" });
+
+      // Adicionar label com valor do investimento (opcional)
+      if (showInvestments) {
+        const investmentLabel = L.marker([coords.lat, coords.lng - 0.3], {
+          icon: L.divIcon({
+            className: "investment-label",
+            html: `<div style="background: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; border: 1px solid #ccc;">${(province.investment / 1000).toFixed(1)}k</div>`,
+            iconSize: [40, 20],
+            iconAnchor: [20, 10],
+          }),
+        }).addTo(map);
+      }
+    });
+
+    // Armazenar referência do mapa
+    mapRef.current = map;
+
+    // Cleanup ao desmontar
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [highlightProvince, onProvinceClick, showInvestments]);
+
+  // Adicionar CSS customizado
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      .investment-label {
+        pointer-events: none;
+      }
+      .leaflet-popup-content {
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .leaflet-container {
+        background: #e5f0f5;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   return (
-    <svg viewBox="0 0 300 380" width={width} height={height} className="mx-auto">
-      {/* Country outline */}
-      <path
-        d="M130,5 L225,0 L280,30 L275,80 L260,130 L220,170 L200,230 L180,260 L160,290 L140,310 L110,340 L95,360 L80,350 L75,320 L70,290 L65,260 L60,230 L55,200 L60,170 L55,140 L60,110 L70,80 L90,50 L110,25 Z"
-        fill="hsl(var(--secondary))"
-        stroke="hsl(var(--border))"
-        strokeWidth="1.5"
-      />
-
-      {/* Province regions */}
-      {provinces.map((prov) => {
-        const pos = provincePositions[prov.name];
-        if (!pos) return null;
-        const isHighlighted = highlightProvince === prov.name;
-        const investmentRatio = prov.investment / 28500;
-
-        return (
-          <g
-            key={prov.id}
-            onClick={() => onProvinceClick?.(prov.name)}
-            className={onProvinceClick ? "cursor-pointer" : ""}
-          >
-            <rect
-              x={pos.x * scale}
-              y={pos.y * scale}
-              width={pos.w * scale}
-              height={pos.h * scale}
-              rx={4 * scale}
-              fill={isHighlighted ? "hsl(var(--primary))" : `hsl(147, 63%, ${70 - investmentRatio * 50}%)`}
-              stroke={isHighlighted ? "hsl(var(--foreground))" : "hsl(var(--background))"}
-              strokeWidth={isHighlighted ? 2.5 : 1}
-              opacity={isHighlighted ? 1 : 0.85}
-              className="transition-all duration-200 hover:opacity-100"
-            />
-            <text
-              x={(pos.x + pos.w / 2) * scale}
-              y={(pos.y + pos.h / 2 - 4) * scale}
-              textAnchor="middle"
-              className="pointer-events-none fill-primary-foreground"
-              fontSize={size === "sm" ? 6 : 8}
-              fontWeight={isHighlighted ? 700 : 500}
-            >
-              {prov.name.length > 12 ? prov.name.substring(0, 10) + "…" : prov.name}
-            </text>
-            <text
-              x={(pos.x + pos.w / 2) * scale}
-              y={(pos.y + pos.h / 2 + 8) * scale}
-              textAnchor="middle"
-              className="pointer-events-none fill-primary-foreground"
-              fontSize={size === "sm" ? 5 : 7}
-              opacity={0.8}
-            >
-              {prov.investment.toLocaleString()} M
-            </text>
-            {isHighlighted && (
-              <circle
-                cx={(pos.x + pos.w / 2) * scale}
-                cy={(pos.y - 6) * scale}
-                r={4 * scale}
-                fill="hsl(var(--destructive))"
-                className="animate-pulse"
-              />
-            )}
-          </g>
-        );
-      })}
-    </svg>
+    <div
+      ref={mapContainerRef}
+      style={{ height, width, borderRadius: "8px", overflow: "hidden" }}
+    />
   );
 };
 
-export default MozambiqueMap;
+export default MozambiqueMapLeaflet;

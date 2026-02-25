@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Menu, X, Globe, User, LogOut, Shield } from "lucide-react";
+import { Menu, X, Globe, User, LogOut, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
@@ -21,15 +21,14 @@ const Header = () => {
     { path: "/about", label: t("nav.about") },
   ];
 
-  const isActive = (path: string) => location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
+  const isActive = (path: string) =>
+    location.pathname === path ||
+    (path !== "/" && location.pathname.startsWith(path));
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <span className="text-sm font-bold text-primary-foreground">IE</span>
-          </div>
           <span className="hidden font-serif text-lg text-foreground sm:block">
             Inteligência Econômica
           </span>
@@ -59,7 +58,7 @@ const Header = () => {
                   : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
               }`}
             >
-              <Shield className="h-3.5 w-3.5" /> Admin
+              <UserCheck className="h-3.5 w-3.5" /> Admin
             </Link>
           )}
         </nav>
@@ -70,7 +69,9 @@ const Header = () => {
             className="flex items-center gap-1 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <Globe className="h-4 w-4" />
-            <span className="font-medium">{language === "pt" ? "EN" : "PT"}</span>
+            <span className="font-medium">
+              {language === "pt" ? "EN" : "PT"}
+            </span>
           </button>
 
           {isAuthenticated ? (
@@ -78,7 +79,9 @@ const Header = () => {
               <Link to="/profile">
                 <Button variant="ghost" size="sm" className="gap-1">
                   <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">{user?.name?.split(" ")[0]}</span>
+                  <span className="hidden sm:inline">
+                    {user?.name?.split(" ")[0]}
+                  </span>
                 </Button>
               </Link>
               <Button variant="ghost" size="sm" onClick={logout}>
@@ -91,8 +94,15 @@ const Header = () => {
             </Link>
           )}
 
-          <button className="rounded-md p-2 lg:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          <button
+            className="rounded-md p-2 lg:hidden"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
@@ -107,7 +117,9 @@ const Header = () => {
                 to={item.path}
                 onClick={() => setMobileOpen(false)}
                 className={`rounded-md px-3 py-2.5 text-sm font-medium ${
-                  isActive(item.path) ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"
+                  isActive(item.path)
+                    ? "bg-secondary text-secondary-foreground"
+                    : "text-muted-foreground"
                 }`}
               >
                 {item.label}
@@ -119,7 +131,7 @@ const Header = () => {
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-1 rounded-md px-3 py-2.5 text-sm font-medium text-primary"
               >
-                <Shield className="h-3.5 w-3.5" /> Admin
+                <UserCheck className="h-3.5 w-3.5" /> Admin
               </Link>
             )}
           </nav>
