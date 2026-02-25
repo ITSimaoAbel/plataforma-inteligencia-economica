@@ -101,6 +101,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "general.cancel": "Cancelar",
     "general.download": "Download",
     "general.share": "Compartilhar",
+    // Admin
+    "admin.title": "Painel Administrativo",
+    "admin.opportunities": "Gestão de Oportunidades",
+    "admin.users": "Gestão de Usuários",
+    "admin.logs": "Logs do Sistema",
+    // Alerts
+    "alerts.title": "Sistema de Alertas",
+    "alerts.configure": "Configurar Alertas",
+    // Restricted
+    "restricted.login_required": "Faça login para acessar este conteúdo",
+    "restricted.mpme_only": "Conteúdo exclusivo para MPMEs registadas",
   },
   en: {
     "nav.home": "Home",
@@ -190,5 +201,13 @@ export const translations: Record<Language, Record<string, string>> = {
     "general.cancel": "Cancel",
     "general.download": "Download",
     "general.share": "Share",
+    "admin.title": "Admin Panel",
+    "admin.opportunities": "Manage Opportunities",
+    "admin.users": "Manage Users",
+    "admin.logs": "System Logs",
+    "alerts.title": "Alert System",
+    "alerts.configure": "Configure Alerts",
+    "restricted.login_required": "Login to access this content",
+    "restricted.mpme_only": "Exclusive content for registered SMEs",
   },
 };
