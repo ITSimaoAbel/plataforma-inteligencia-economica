@@ -1,6 +1,6 @@
 // pages/Opportunities.tsx
 import { useState, useMemo } from "react";
-import Layout from "@/components/Layout";
+import { DashboardLayout } from "@/components/DashboardLayout";
 import OpportunityCard from "@/components/OpportunityCard";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -47,8 +47,8 @@ const Opportunities = () => {
     "rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground";
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-12">
+    <DashboardLayout>
+      <div className="w-full px-6 py-8">
         <h1 className="section-title mb-8">{t("opp.title")}</h1>
 
         {/* Filters */}
@@ -182,7 +182,7 @@ const Opportunities = () => {
           </>
         )}
       </div>
-    </Layout>
+    </DashboardLayout>
   );
 };
 

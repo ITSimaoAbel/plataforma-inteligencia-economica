@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Layout from "@/components/Layout";
+import { DashboardLayout } from "@/components/DashboardLayout";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { provinces, sectors } from "@/data/mockData";
@@ -34,8 +34,8 @@ const Alerts = () => {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-12">
+    <DashboardLayout>
+      <div className="w-full px-6 py-8">
         <h1 className="section-title mb-2">Sistema de Alertas</h1>
         <p className="mb-8 text-muted-foreground">Configure alertas personalizados para receber notificações sobre oportunidades relevantes.</p>
 
@@ -129,7 +129,7 @@ const Alerts = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </DashboardLayout>
   );
 };
 

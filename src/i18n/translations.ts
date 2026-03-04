@@ -27,9 +27,23 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // ===== STATS =====
     "stats.investment": "Investimento Total",
+    "stats.opportunities": "Oportunidades",
+    "stats.activeAlerts": "Alertas Ativos",
     "stats.provinces": "Províncias",
     "stats.sectors": "Sectores",
-    "stats.opportunities": "Oportunidades",
+
+    // ===== CARDS =====
+    "card.details": "Ver Detalhes",
+    "card.value": "Valor",
+    "card.province": "Província",
+    "card.sector": "Sector",
+    "card.status": "Status",
+    "card.planned": "Planejado",
+    "card.ongoing": "Em Andamento",
+    "card.completed": "Concluído",
+    "card.exclusive": "Conteúdo exclusivo",
+    "card.login_to_see": "Faça login para ver mais oportunidades",
+    "card.login": "Entrar",
 
     // ===== SECTIONS =====
     "section.featured": "OPORTUNIDADES EM DESTAQUE",
@@ -41,20 +55,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "section.alerts": "ALERTAS EM TEMPO REAL",
     "section.alerts.title": "Últimas Atualizações",
 
-    // ===== CARDS =====
-    "card.details": "Ver Detalhes",
-    "card.value": "Valor",
-    "card.province": "Província",
-    "card.sector": "Sector",
-    "card.status": "Status",
-    "card.planned": "Planejado",
-    "card.ongoing": "Em Andamento",
-    "card.completed": "Concluído",
-    // NOVAS TRADUÇÕES CARD
-    "card.exclusive": "Conteúdo exclusivo",
-    "card.login_to_see": "Faça login para ver mais oportunidades",
-    "card.login": "Entrar",
-
     // ===== OPPORTUNITIES PAGE =====
     "opp.title": "Oportunidades de Investimento",
     "opp.search": "Pesquisar oportunidades...",
@@ -64,7 +64,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "opp.sort.date": "Data",
     "opp.sort.value": "Valor",
     "opp.no_results": "Nenhuma oportunidade encontrada",
-    // NOVAS TRADUÇÕES OPPORTUNITIES
     "opportunities.limited_access": "Acesso limitado a 3 oportunidades",
     "opportunities.login_to_see_all":
       "Faça login ou registre-se para ver todas as oportunidades disponíveis.",
@@ -83,12 +82,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "detail.download": "Baixar Documentos",
     "detail.contact": "Contactar Entidade",
 
+    // ===== SEARCH =====
+    "search": "Pesquisar...",
+
     // ===== DASHBOARD =====
+    "dashboard": "Dashboard",
     "dash.title": "Dashboard Econômico",
     "dash.investment_province": "Investimento por Província",
     "dash.distribution_sector": "Distribuição por Sector",
     "dash.evolution": "Evolução do Investimento",
     "dash.export": "Exportar Dados",
+    "dash.recent_opportunities": "Oportunidades Recentes",
 
     // ===== AUTH =====
     "auth.login": "Entrar",
@@ -173,6 +177,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "stats.provinces": "Provinces",
     "stats.sectors": "Sectors",
     "stats.opportunities": "Opportunities",
+    "stats.activeAlerts": "Active Alerts",
 
     // ===== SECTIONS =====
     "section.featured": "FEATURED OPPORTUNITIES",
@@ -193,7 +198,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "card.planned": "Planned",
     "card.ongoing": "Ongoing",
     "card.completed": "Completed",
-    // NEW CARD TRANSLATIONS
     "card.exclusive": "Exclusive content",
     "card.login_to_see": "Login to see more opportunities",
     "card.login": "Login",
@@ -207,7 +211,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "opp.sort.date": "Date",
     "opp.sort.value": "Value",
     "opp.no_results": "No opportunities found",
-    // NEW OPPORTUNITIES TRANSLATIONS
     "opportunities.limited_access": "Limited access to 3 opportunities",
     "opportunities.login_to_see_all":
       "Login or register to see all available opportunities.",
@@ -226,12 +229,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "detail.download": "Download Documents",
     "detail.contact": "Contact Entity",
 
+    // ===== SEARCH =====
+    "search": "Search...",
+
     // ===== DASHBOARD =====
+    "dashboard": "Dashboard",
     "dash.title": "Economic Dashboard",
     "dash.investment_province": "Investment by Province",
     "dash.distribution_sector": "Distribution by Sector",
     "dash.evolution": "Investment Evolution",
     "dash.export": "Export Data",
+    "dash.recent_opportunities": "Recent Opportunities",
 
     // ===== AUTH =====
     "auth.login": "Login",

@@ -19,12 +19,12 @@ const Login = () => {
     if (isRegister) {
       register({ ...form, email: form.email, name: form.name, company: form.company, phone: form.phone, province: form.province, password: form.password });
       toast.success("Conta criada com sucesso!");
-      navigate("/");
+      navigate("/dashboard");
     } else {
       const success = login(form.email, form.password);
       if (success) {
         toast.success("Login realizado com sucesso!");
-        navigate("/");
+        navigate("/dashboard");
       } else {
         toast.error("Credenciais inválidas. Tente demo@empresa.co.mz / senha123");
       }

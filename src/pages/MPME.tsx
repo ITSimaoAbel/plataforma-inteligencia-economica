@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import { DashboardLayout } from "@/components/DashboardLayout";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CheckCircle, FileCheck, HelpCircle, Users, MessageSquare, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,8 +31,8 @@ const MPME = () => {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-12">
+    <DashboardLayout>
+      <div className="w-full px-6 py-8">
         {/* Header */}
         <div className="mb-12 text-center">
           <p className="section-label">{language === "pt" ? "GUIA PARA MPME" : "SME GUIDE"}</p>
@@ -83,7 +83,7 @@ const MPME = () => {
           </form>
         </div>
       </div>
-    </Layout>
+    </DashboardLayout>
   );
 };
 

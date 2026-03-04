@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import { DashboardLayout } from "@/components/DashboardLayout";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { reports } from "@/data/mockData";
 import { FileText, Download, Calendar, Eye } from "lucide-react";
@@ -13,8 +13,8 @@ const Reports = () => {
   const filtered = filter ? reports.filter((r) => r.category === filter) : reports;
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-12">
+    <DashboardLayout>
+      <div className="w-full px-6 py-8">
         <h1 className="section-title mb-8">{t("section.reports.title")}</h1>
 
         <div className="mb-8 flex gap-2">
@@ -62,7 +62,7 @@ const Reports = () => {
           ))}
         </div>
       </div>
-    </Layout>
+    </DashboardLayout>
   );
 };
 
